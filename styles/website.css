@@ -1,0 +1,15 @@
+.markdown-section sup {
+    font-size: .7em;
+    color: #E05050; 
+}
+
+.markdown-section pre,
+.markdown-section code {
+    border-radius: 5px;
+    border: solid 1px #efefef;
+}
+
+.markdown-section pre code {
+    border-radius: 0;
+    border: none;
+}
