@@ -157,79 +157,48 @@ computed: {
 
 Props总是单向传递下来的。为了对父组件的作用域产生影响，组件应该显式地触发一个事件而非隐式的双向绑定数据，更多信息请查看
 
-- [Custom component events](components.html#Custom-Events)
-- [Custom input components](components.html#Form-Input-Components-using-Custom-Events) (using component events)
-- [Global state management](state-management.html)
+- [Custom component events](http://vuejs.org/guide/components.html#Custom-Events)
 
-### 指令`v-bind`的修饰符`.once` and `.sync` Modifiers <sup>deprecated</sup>
+- [Custom input components](http://vuejs.org/guide/components.html#Form-Input-Components-using-Custom-Events) (using component events)
 
-Props are now always one-way down. To produce side effects in the parent scope, a component needs to explicitly emit an event instead of relying on implicit binding. For more information, see:
+- [Global state management](http://vuejs.org/guide/state-management.html)
 
-- [Custom component events](components.html#Custom-Events)
+### 指令`v-bind`的修饰符`.once` and `.sync`<sup>deprecated</sup>
 
-- [Custom input components](components.html#Form-Input-Components-using-Custom-Events) (using component events)
+Props总是单向传递下来的。为了对父组件的作用域产生影响，组件应该显式地触发一个事件而非隐式的双向绑定数据，更多信息请查看
 
-- [Global state management](state-management.html)
+- [Custom component events](http://vuejs.org/guide/components.html#Custom-Events)
 
-<div class="upgrade-path">
+- [Custom input components](http://vuejs.org/guide/components.html#Form-Input-Components-using-Custom-Events) (using component events)
 
- <h4>Upgrade Path</h4>
+- [Global state management](http://vuejs.org/guide/state-management.html)
 
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the <code>.once</code> and <code>.sync</code> modifiers.</p>
+### Prop变动 <sup>deprecated</sup>
 
-</div>
+修改prop被认为是反模式（anti-pattern）,例如，申明一个prop并给他赋值`this.myProp = 'someOtherValue'`。基于更新机制，父组件一旦重新渲染，它的子组件的本地状态将会被覆写
 
-### Prop Mutation <sup>deprecated</sup>
+大多数需要修改prop的场景都可以通过以下方式来替代实现：
 
-Mutating a prop locally is now considered an anti-pattern, e.g. declaring a prop and then setting `this.myProp = 'someOtherValue'` in the component. Due to the new rendering mechanism, whenever the parent component re-renders, the child component's local changes will be overwritten.
+- 设置一个data属性，用prop的值去初始化它（如使用修饰符once的场景）
 
-Most use cases of mutating a prop can be replaced by one of these options:
+- 设置一个计算属性（如使用prop coerce选项的场景）
 
-- a data property, with the prop used to set its default value
+### vue根组件上的Props<sup>deprecated</sup>
 
-- a computed property
+在vue根组件实例上（例如，使用`new Vue({ ... })`实例化的组件），申明prop时应该使用`propsData`，而不是`props`
 
-<div class="upgrade-path">
+## 内建指令（`Directive`）
 
- <h4>Upgrade Path</h4>
+### `v-bind`与布尔值 
 
- <p>Run your end-to-end test suite or app after upgrading and look for <strong>console warnings</strong> about prop mutations.</p>
+当使用`v-bind`时，只有`null`、`undefined`和`false`是假值（Falsiness），也就意味着`0`和空字符串会被解析为真值（truthy）。例如，`v-bind:draggable="''"` 会被解析为 as `draggable="true"`
+对于枚举属性，除了上述假值，字符串 `"false"`会被解析为`attr="false"`，也为假值
 
-</div>
+<p class="tip">注意：对于其它指令 (如，`v-if`和`v-show`)，JavaScript本来的真假值依然生效</p>
 
-### Props on a Root Instance <sup>deprecated</sup>
+### 用`v-on`监听组件的原生事件 
 
-On root Vue instances (i.e. instances created with `new Vue({ ... })`), you must use `propsData` instead of `props`.
-
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run your end-to-end test suite, if you have one. The <strong>failed tests</strong> should alert to you to the fact that props passed to root instances are no longer working.</p>
-
-</div>
-
-## Built-In Directives
-
-### Truthiness/Falsiness with `v-bind`
-
-When used with `v-bind`, the only falsy values are now: `null`, `undefined`, and `false`. This means `0` and empty strings will render as truthy. So for example, `v-bind:draggable="''"` will render as `draggable="true"`.
-
-For enumerated attributes, in addition to the falsy values above, the string `"false"` will also render as `attr="false"`.
-
-<p class="tip">Note that for other directives (e.g. `v-if` and `v-show`), JavaScript's normal truthiness still applies.</p>
-
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run your end-to-end test suite, if you have one. The <strong>failed tests</strong> should alert to you to any parts of your app that may be affected by this change.</p>
-
-</div>
-
-### Listening for Native Events on Components with `v-on`
-
-When used on a component, `v-on` now only listens to custom events `$emit`ted by that component. To listen for a native DOM event on the root element, you can use the `.native` modifier. For example:
+对于组件来说，`v-on`只能监听用由`$emit`触发的组件自定义事件，为了监听组件根节点元素的原生DOM事件，可以使用`.native`修饰符，例如
 
 ``` html
 
@@ -237,19 +206,11 @@ When used on a component, `v-on` now only listens to custom events `$emit`ted by
 
 ```
 
-<div class="upgrade-path">
+### `v-model` 与 `debounce` <sup>deprecated</sup>
 
- <h4>Upgrade Path</h4>
+debounce（去抖）一般被用来限制Ajax请求或其它高耗操作的执行频率。Vue的 `debounce`属性配合`v-model`指令可以在一些简单的场景很容易地实现去抖。但是，`debounce`实际上限制的是状态的更新频率而非高耗操作的执行频率，两者虽然差别细微，但是随着应用规模的增长，这种实现方式会成为页面性能的瓶颈这种局限性在实现一个搜索提示器时候尤其明显，如下例所示
 
- <p>Run your end-to-end test suite, if you have one. The <strong>failed tests</strong> should alert to you to any parts of your app that may be affected by this change.</p>
-
-</div>
-
-### `v-model` with `debounce` <sup>deprecated</sup>
-
-Debouncing is used to limit how often we execute Ajax requests and other expensive operations. Vue's `debounce` attribute parameter for `v-model` made this easy for very simple cases, but it actually debounced __state updates__ rather than the expensive operations themselves. It's a subtle difference, but it comes with limitations as an application grows.
-
-These limitations become apparent when designing a search indicator, like this one for example:
+``` html
 
 <script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.js"></script>
 
@@ -332,6 +293,8 @@ new Vue({
 })
 
 </script>
+
+```
 
 Using the `debounce` attribute, there'd be no way to detect the "Typing" state, because we lose access to the input's real-time state. By decoupling the debounce function from Vue however, we're able to debounce only the operation we want to limit, removing the limits on features we can develop:
 
