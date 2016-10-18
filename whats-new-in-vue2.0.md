@@ -213,236 +213,123 @@ debounce（去抖）一般被用来限制Ajax请求或其它高耗操作的执�
 ``` html
 
 <script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.js"></script>
-
 <div id="debounce-search-demo" class="demo">
-
- <input v-model="searchQuery" placeholder="Type something">
-
- <strong>{{ searchIndicator }}</strong>
-
-</div>
-
+    <input v-model="searchQuery" placeholder="Type something"> <strong>{{ searchIndicator }}</strong></div>
 <script>
-
 new Vue({
-
- el: '#debounce-search-demo',
-
- data: {
-
- searchQuery: '',
-
- searchQueryIsDirty: false,
-
- isCalculating: false
-
- },
-
- computed: {
-
- searchIndicator: function () {
-
- if (this.isCalculating) {
-
- return '⟳ Fetching new results'
-
- } else if (this.searchQueryIsDirty) {
-
- return '... Typing'
-
- } else {
-
- return '✓ Done'
-
- }
-
- }
-
- },
-
- watch: {
-
- searchQuery: function () {
-
- this.searchQueryIsDirty = true
-
- this.expensiveOperation()
-
- }
-
- },
-
- methods: {
-
- expensiveOperation: _.debounce(function () {
-
- this.isCalculating = true
-
- setTimeout(function () {
-
- this.isCalculating = false
-
- this.searchQueryIsDirty = false
-
- }.bind(this), 1000)
-
- }, 500)
-
- }
-
+    el: '#debounce-search-demo',
+    data: {
+        searchQuery: '',
+        searchQueryIsDirty: false,
+        isCalculating: false
+    },
+    computed: {
+        searchIndicator: function() {
+            if (this.isCalculating) {
+                return '⟳ Fetching new results'
+            } else if (this.searchQueryIsDirty) {
+                return '... Typing'
+            } else {
+                return '✓ Done'
+            }
+        }
+    },
+    watch: {
+        searchQuery: function() {
+            this.searchQueryIsDirty = true this.expensiveOperation()
+        }
+    },
+    methods: {
+        expensiveOperation: _.debounce(function() {
+            this.isCalculating = true setTimeout(function() {
+                this.isCalculating = false this.searchQueryIsDirty = false
+            }.bind(this), 1000)
+        }, 500)
+    }
 })
-
 </script>
 
 ```
-
-Using the `debounce` attribute, there'd be no way to detect the "Typing" state, because we lose access to the input's real-time state. By decoupling the debounce function from Vue however, we're able to debounce only the operation we want to limit, removing the limits on features we can develop:
+使用`debounce`属性时，因为不能实时获取输入框的状态，将不能(准确)检测到输入状态。将去抖（debounce）从Vue中解耦，使得可以仅仅限制高耗操作本身的执行，而不会有其他的局限性。
 
 ``` html
-
 <!--
-
 By using the debounce function from lodash or another dedicated
-
 utility library, we know the specific debounce implementation we
-
 use will be best-in-class - and we can use it ANYWHERE. Not just
-
 in our template.
-
 -->
-
 <script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.js"></script>
-
 <div id="debounce-search-demo">
-
- <input v-model="searchQuery" placeholder="Type something">
-
- <strong>{{ searchIndicator }}</strong>
-
+    <input v-model="searchQuery" placeholder="Type something">
+    <strong>{{ searchIndicator }}</strong>
 </div>
-
-```
-
-``` js
-
+<script>
 new Vue({
-
- el: '#debounce-search-demo',
-
- data: {
-
- searchQuery: '',
-
- searchQueryIsDirty: false,
-
- isCalculating: false
-
- },
-
- computed: {
-
- searchIndicator: function () {
-
- if (this.isCalculating) {
-
- return '⟳ Fetching new results'
-
- } else if (this.searchQueryIsDirty) {
-
- return '... Typing'
-
- } else {
-
- return '✓ Done'
-
- }
-
- }
-
- },
-
- watch: {
-
- searchQuery: function () {
-
- this.searchQueryIsDirty = true
-
- this.expensiveOperation()
-
- }
-
- },
-
- methods: {
-
- // This is where the debounce actually belongs.
-
- expensiveOperation: _.debounce(function () {
-
- this.isCalculating = true
-
- setTimeout(function () {
-
- this.isCalculating = false
-
- this.searchQueryIsDirty = false
-
- }.bind(this), 1000)
-
- }, 500)
-
- }
-
+    el: '#debounce-search-demo',
+    data: {
+        searchQuery: '',
+        searchQueryIsDirty: false,
+        isCalculating: false
+    },
+    computed: {
+        searchIndicator: function() {
+            if (this.isCalculating) {
+                return '⟳ Fetching new results'
+            } else if (this.searchQueryIsDirty) {
+                return '... Typing'
+            } else {
+                return '✓ Done'
+            }
+        }
+    },
+    watch: {
+        searchQuery: function() {
+            this.searchQueryIsDirty = true
+            this.expensiveOperation()
+        }
+    },
+    methods: {
+        // This is where the debounce actually belongs.
+        expensiveOperation: _.debounce(function() {
+            this.isCalculating = true
+            setTimeout(function() {
+                this.isCalculating = false
+                this.searchQueryIsDirty = false
+            }.bind(this), 1000)
+        }, 500)
+    }
 })
+</script>
 
 ```
+这种处理方式的另一个优点是可以自主选择节流/去抖包装函数。比如在提供搜索候选建议的时候，实际上更应该使用一个节流(throttle)函数而非去抖(debounce)函数，因为去抖总会在用户输入结束后一段时间才给出搜索建议，这是不太理想的。如果你使用了类似lodash的工具库，从`debounce`重构为`throttle`也是很方便的。
 
-Another advantage of this approach is there will be times when debouncing isn't quite the right wrapper function. For example, when hitting an API for search suggestions, waiting to offer suggestions until after the user has stopped typing for a period of time isn't an ideal experience. What you probably want instead is a __throttling__ function. Now since you're already using a utility library like lodash, refactoring to use its `throttle` function instead takes only a few seconds.
+### `v-model`与`lazy`或`number`属性 <sup>deprecated</sup>
 
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the <code>debounce</code> attribute.</p>
-
-</div>
-
-### `v-model` with `lazy` or `number` Param Attributes <sup>deprecated</sup>
-
-The `lazy` and `number` param attributes are now modifiers, to make it more clear what That means instead of:
+现在`lazy`和`number`属性应作为修饰符配合`v-model`指令使用，这样更清晰一些
 
 ``` html
 
 <input v-model="name" lazy>
-
 <input v-model="age" type="number" number>
 
 ```
 
-You would use:
+替换为
 
 ``` html
 
 <input v-model.lazy="name">
-
 <input v-model.number="age" type="number">
 
 ```
 
-<div class="upgrade-path">
+### `v-model`与行内`value`属性 <sup>deprecated</sup>
 
- <h4>Upgrade Path</h4>
+`v-model`不再将value属性的值视为其初始值。为了更好的可预测性，它始终把vue实例作为数据源。
 
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the these deprecated param attributes.</p>
-
-</div>
-
-### `v-model` with Inline `value` <sup>deprecated</sup>
-
-`v-model` no longer cares about the initial value of an inline `value` attribute. For predictability, it will instead always treat the Vue instance data as the source of truth.
-
-That means this element:
+也就是说
 
 ``` html
 
@@ -450,7 +337,7 @@ That means this element:
 
 ```
 
-backed by this data:
+数据基于vue实例
 
 ``` js
 
@@ -462,31 +349,22 @@ data: {
 
 ```
 
-will render with a value of "bar" instead of "foo". The same goes for a `<textarea>` with existing content. Instead of:
+输入框的值将会渲染为"bar"而非"foo"，给定初始值的`<textarea>`同理。
 
 ``` html
 
 <textarea v-model="text">
-
  hello world
-
 </textarea>
 
 ```
 
-You should ensure your initial value for `text` is "hello world".
+所以需要确保`text`的初始值是"hello world"
 
-<div class="upgrade-path">
 
- <h4>Upgrade Path</h4>
+### `v-model`与`v-for`原始类型的遍历值 <sup>deprecated</sup>
 
- <p>Run your end-to-end test suite or app after upgrading and look for <strong>console warnings</strong> about inline value attributes with <code>v-model</code>.</p>
-
-</div>
-
-### `v-model` with `v-for` Iterated Primitive Values <sup>deprecated</sup>
-
-Cases like this no longer work:
+下诉的表达式不再有效：
 
 ``` html
 
@@ -494,7 +372,7 @@ Cases like this no longer work:
 
 ```
 
-The reason is this is the equivalent JavaScript that the `<input>` would compile to:
+因为`<input>`编译后等价的代码如下所示
 
 ``` js
 
@@ -505,10 +383,8 @@ strings.map(function (str) {
 })
 
 ```
-
-As you can see, `v-model`'s two-way binding doesn't make sense here. Setting `str` to another value in the iterator function will do nothing because it's just a local variable in the function scope.
-
-Instead, you should use an array of __objects__ so that `v-model` can update the field on the object. For example:
+显而易见，`v-model`的双向绑定不再有意义，因为设置局部变量str`的值不会对strings有任何影响
+应该使用一个元素为对象的数组，这样`v-model`就可以更新数组内每个元素的值了（因为传入的是对象的引用）。
 
 ``` html
 
@@ -516,25 +392,16 @@ Instead, you should use an array of __objects__ so that `v-model` can update the
 
 ```
 
-<div class="upgrade-path">
+### `v-bind:style`在对象语法中使用`!important` <sup>deprecated</sup>
 
- <h4>Upgrade Path</h4>
-
- <p>Run your test suite, if you have one. The <strong>failed tests</strong> should alert to you to any parts of your app that may be affected by this change.</p>
-
-</div>
-
-### `v-bind:style` with Object Syntax and `!important` <sup>deprecated</sup>
-
-This will no longer work:
+下面的表达式不再有效
 
 ``` html
 
 <p v-bind:style="{ color: myColor + ' !important' }">hello</p>
 
 ```
-
-If you really need to override another `!important`, you must use the string syntax:
+如果你确实需要使用`!important`，可以这样：
 
 ``` html
 
@@ -542,36 +409,27 @@ If you really need to override another `!important`, you must use the string syn
 
 ```
 
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of style bindings with <code>!important</code> in objects.</p>
-
-</div>
-
 ### `v-el` and `v-ref` <sup>deprecated</sup>
 
-For simplicity, `v-el` and `v-ref` have been merged into the `ref` attribute, accessible on a component instance via `$refs`. That means `v-el:my-element` would become `ref="myElement"` and `v-ref:my-component` would become `ref="myComponent"`. When used on a normal element, the `ref` will be the DOM element, and when used on a component, the `ref` will be the component instance.
+为了更简洁，`v-el`和`v-ref`指令被合并到属性`ref`中，可以通过`$refs`在组件实例上获取。`v-el:my-element`变为`ref="myElement"`，`v-ref:my-component`变为`ref="myComponent"`。当在普通dom元素上使用时，ref将获取到dom元素，用于组件上时，将获取到组件实例。
 
-Since `v-ref` is no longer a directive, but a special attribute, it can also be dynamically defined. This is especially useful in combination with `v-for`. For example:
+由于`v-ref`不再是一个指令，只是一个特殊的属性，因此可以被动态定义，这在与`v-for`组合使用是尤其有用
 
 ``` html
 
 <p v-for="item in items" v-bind:ref="'item' + item.id"></p>
 
 ```
-
-Previously, `v-el`/`v-ref` combined with `v-for` would produce an array of elements/components, because there was no way to give each item a unique name. You can still achieve this behavior by given each item the same `ref`:
+先前，`v-el`/`v-ref`与`v-for`组合使用时，由于无法给每个条目不同的名称，会得到一个dom元素或者组件的数组。现在，仍然可以通过设置相同的ref来使用这个特性。
 
 ``` html
 
 <p v-for="item in items" ref="items"></p>
 
 ```
+和1.x版本不一样，`$refs`不再是响应式的，它们注册/更新依赖于渲染过程本身，要使它是响应式的，需要在每次改变时重复渲染。
 
-Unlike in 1.x, these `$refs` are not reactive, because they're registered/updated during the render process itself. Making them reactive would require duplicate renders for every change.
-
+另一方面，`$refs`本来是设计用来在js你获取组件/dom元素的，因此不建议在模板里面过于依赖它，
 On the other hand, `$refs` are designed primarily for programmatic access in JavaScript - it is not recommended to rely on them in templates, because that would mean referring to state that does not belong to the instance itself. This would violate Vue's data-driven view model.
 
 <div class="upgrade-path">
