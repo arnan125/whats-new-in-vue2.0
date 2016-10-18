@@ -427,18 +427,10 @@ strings.map(function (str) {
 <p v-for="item in items" ref="items"></p>
 
 ```
-和1.x版本不一样，`$refs`不再是响应式的，它们注册/更新依赖于渲染过程本身，要使它是响应式的，需要在每次改变时重复渲染。
+和1.x版本不一样，`$refs`不再是响应式的，因为它们注册/更新依赖于渲染过程本身，要使它是响应式的，需要在每次改变时重复渲染。（不太理解，附上原文。Unlike in 1.x, these $refs are not reactive, because they’re registered/updated during the render process itself. Making them reactive would require duplicate renders for every change.）
 
-另一方面，`$refs`本来是设计用来在js你获取组件/dom元素的，因此不建议在模板里面过于依赖它，
-On the other hand, `$refs` are designed primarily for programmatic access in JavaScript - it is not recommended to rely on them in templates, because that would mean referring to state that does not belong to the instance itself. This would violate Vue's data-driven view model.
-
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of <code>v-el</code> and <code>v-ref</code>.</p>
-
-</div>
+另一方面，`$refs`本来是设计用来在代码里获取组件/dom元素的，因此不建议在模板里面过于依赖它，会引入不属于实例本身的状态，违反了数据驱动的view模型（不太理解，附上原文。On the other hand, `$refs` are designed primarily for programmatic access in JavaScript - it is not recommended to rely on them in templates, 
+because that would mean referring to state that does not belong to the instance itself. This would violate Vue's data-driven view model.）
 
 ### `v-else` with `v-show` <sup>deprecated</sup>
 
