@@ -456,7 +456,7 @@ because that would mean referring to state that does not belong to the instance 
 
 ## 自定义指令
 
-指令的应用场景被大幅削减，他们目前主要被用来底层（low-level）的dom操作。大多数情况下，开发者更应该倾向于使用组件来实现代码重用，而不是通过自定义指令（比如，弃用[v-drapload](https://github.com/jy03078959/vue-drapload)，使用[<list-view></list-view>](https://github.com/CatchLabs/vue-list-view)）。
+指令的应用场景被大幅削减，他们目前主要被用来底层（low-level）的dom操作。大多数情况下，开发者更应该倾向于使用组件来实现代码重用，而不是通过自定义指令（比如，弃用[`v-drapload`](https://github.com/jy03078959/vue-drapload)，使用[`<list-view></list-view>`](https://github.com/CatchLabs/vue-list-view)）。
 
 一些需要特别之处的不同之处如下，
 
