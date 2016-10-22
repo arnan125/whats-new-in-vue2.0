@@ -432,9 +432,9 @@ strings.map(function (str) {
 另一方面，`$refs`本来是设计用来在代码里获取组件/dom元素的，因此不建议在模板里面过于依赖它，会引入不属于实例本身的状态，违反了数据驱动的view模型（不太理解，附上原文。On the other hand, `$refs` are designed primarily for programmatic access in JavaScript - it is not recommended to rely on them in templates, 
 because that would mean referring to state that does not belong to the instance itself. This would violate Vue's data-driven view model.）
 
-### `v-else` with `v-show` <sup>deprecated</sup>
+### `v-else`与`v-show` <sup>deprecated</sup>
 
-`v-else` no longer works with `v-show`. Use `v-if` with a negation expression instead. For example, instead of:
+`v-else`不再配合`v-show`使用（作用于同一个dom元素）。请使用`v-if`表达式替代。示例如下，
 
 ``` html
 
@@ -444,7 +444,7 @@ because that would mean referring to state that does not belong to the instance 
 
 ```
 
-You can use:
+替换为
 
 ``` html
 
@@ -454,35 +454,21 @@ You can use:
 
 ```
 
-<div class="upgrade-path">
+## 自定义指令
 
- <h4>Upgrade Path</h4>
+指令的应用场景被大幅削减，他们目前主要被用来底层（low-level）的dom操作。大多数情况下，开发者更应该倾向于使用组件来实现代码重用，而不是通过自定义指令（比如，弃用[v-drapload](https://github.com/jy03078959/vue-drapload)，使用[<list-view></list-view>](https://github.com/CatchLabs/vue-list-view)）。
 
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the <code>v-else</code> with <code>v-show</code>.</p>
+一些需要特别之处的不同之处如下，
 
-</div>
-
-## Custom Directives
-
-Directives have a greatly reduced scope of responsibility: they are now only used for applying low-level direct DOM manipulations. In most cases, you should prefer using components as the main code-reuse abstraction.
-
-Some of the most notable differences include:
-
-- Directives no longer have instances. This means there's no more `this` inside directive hooks. Instead, they receive everything they might need as arguments. If you really must persist state across hooks, you can do so on `el`.
+- 指令不再有实例，也就意味着不能在指令内部通过`this`访问到该指令的实例。指令几乎将所有需要的数据作为参数接收，
+- Directives no longer have instances. This means there's no more `this` inside directive hooks. Instead, 
+they receive everything they might need as arguments. If you really must persist state across hooks, you can do so on `el`.
 
 - Options such as `acceptStatement`, `deep`, `priority`, etc are all deprecated. To replace `twoWay` directives, see [this example](#Two-Way-Filters-deprecated).
 
 - Some of the current hooks have different behavior and there are also a couple new hooks.
 
 Fortunately, since the new directives are much simpler, you can master them more easily. Read the new [Custom Directives guide](custom-directive.html) to learn more.
-
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of defined directives. The helper will flag all of them, as it's likely in most cases that you'll want to refactor to a component.</p>
-
-</div>
 
 ### Directive `.literal` Modifier <sup>deprecated</sup>
 
