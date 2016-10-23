@@ -1,3 +1,10 @@
+html,body {
+    font-family: Helvetica, 'Hiragino Sans GB', STXihei, 'Microsoft Yahei', '微软雅黑', Arial, sans-serif !important;
+}
+
+.book.font-family-1 {
+    font-family: Helvetica, 'Hiragino Sans GB', STXihei, 'Microsoft Yahei', '微软雅黑', Arial, sans-serif !important;   
+}
 .markdown-section sup {
     font-size: .7em;
     color: #E05050; 
