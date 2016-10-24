@@ -459,22 +459,17 @@ because that would mean referring to state that does not belong to the instance 
 指令的应用场景被大幅削减，他们目前主要被用来底层（low-level）的dom操作。大多数情况下，开发者更应该倾向于使用组件来实现代码重用，而不是通过自定义指令（比如，弃用[`v-drapload`](https://github.com/jy03078959/vue-drapload)，使用[`<list-view></list-view>`](https://github.com/CatchLabs/vue-list-view)）。
 
 一些需要特别之处的不同之处如下，
+- 指令不再有实例，也就意味着不能在指令内部通过`this`访问到该指令的实例。指令几乎将所有需要的数据作为钩子函数（hook functions，）的参数（el，binding，vnode，oldVnode）接收，如果实在需要维护跨钩子的状态，可以使用`el`（唯一可写的的参数，可以操作它的`dataSet`）
+- 高级选项，例如`acceptStatement`，`deep`，`priority`等都已废弃。
+- 一些原有的钩子的行为发生了变化，另外还添加了一些新的钩子函数。
 
-- 指令不再有实例，也就意味着不能在指令内部通过`this`访问到该指令的实例。指令几乎将所有需要的数据作为参数接收，
-- Directives no longer have instances. This means there's no more `this` inside directive hooks. Instead, 
-they receive everything they might need as arguments. If you really must persist state across hooks, you can do so on `el`.
+幸运的是，新的指令系统简单的多，你可以更容易地掌握它们。[自定义指令教程](http://vuejs.org/guide/custom-directive.html)
 
-- Options such as `acceptStatement`, `deep`, `priority`, etc are all deprecated. To replace `twoWay` directives, see [this example](#Two-Way-Filters-deprecated).
+### 指令`.literal`修饰符 <sup>deprecated</sup>
 
-- Some of the current hooks have different behavior and there are also a couple new hooks.
+指令`.literal`修饰符被移除了，因为直接传入一个字符串字面量可以更容易地达到同样的效果
 
-Fortunately, since the new directives are much simpler, you can master them more easily. Read the new [Custom Directives guide](custom-directive.html) to learn more.
-
-### Directive `.literal` Modifier <sup>deprecated</sup>
-
-The `.literal` modifier has been removed, as the same can be easily achieved by just providing a string literal as the value.
-
-For example, you can update:
+比如将
 
 ``` js
 
@@ -482,7 +477,7 @@ For example, you can update:
 
 ```
 
-to just:
+替换为
 
 ``` html
 
@@ -490,51 +485,20 @@ to just:
 
 ```
 
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the `.literal` modifier on a directive.</p>
-
-</div>
-
 ## Transitions
 
-### `transition` Attribute <sup>deprecated</sup>
+### `transition`属性 <sup>deprecated</sup>
 
-Vue's transition system has changed quite drastically and now uses `<transition>` and `<transition-group>` wrapper elements, rather than the `transition` attribute. It's recommended to read the new [Transitions guide](transitions.html) to learn more.
+Vue过渡效果（transition）体系完全改变了，现在使用`<transition>`和`<transition-group>`组件来作为包裹容器，而不是使用`transition`属性，了解更多的细节请阅读[Transitions教程](https://vuejs.org/guide/transitions.html)（内容异常丰富）。
 
-<div class="upgrade-path">
+### 使用`Vue.transition`定义可重用的Transitions <sup>deprecated</sup>
 
- <h4>Upgrade Path</h4>
+在新的transition体系内，可以[使用组件来定义可重用的transition](http://rc.vuejs.org/guide/transitions.html#Reusable-Transitions)。
 
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the <code>transition</code> attribute.</p>
+### Transition渐进过渡属性`stagger` <sup>deprecated</sup>
 
-</div>
+如果需要实现列表的渐进过渡效果，可以给元素设置`data-index`或者类似的属性，然后在transiton钩子函数中获取它来控制过渡开始的时间（delay）[一个示例](https://vuejs.org/guide/transitions.html#Staggering-List-Transitions)。
 
-### `Vue.transition` for Reusable Transitions <sup>deprecated</sup>
-
-With the new transition system, you can now just [use components for reusable transitions](http://rc.vuejs.org/guide/transitions.html#Reusable-Transitions).
-
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of <code>Vue.transition</code>.</p>
-
-</div>
-
-### Transition `stagger` Attribute <sup>deprecated</sup>
-
-If you need to stagger list transitions, you can control timing by setting and accessing a `data-index` (or similar attribute) on an element. See [an example here](transitions.html#Staggering-List-Transitions).
-
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the <code>transition</code> attribute. During your update, you can transition (pun very much intended) to the new staggering strategy as well.</p>
-
-</div>
 
 ## Events
 
