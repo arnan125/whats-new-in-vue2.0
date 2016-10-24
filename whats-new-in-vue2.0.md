@@ -1,6 +1,6 @@
 ## Templates
 
-### 片断实例 <sup>deprecated</sup>
+### 片断实例 <sup>废弃</sup>
 
 每一个组件都应仅有一个根节点元素，片段实例不再被允许。如果有如下代码片段
 
@@ -20,15 +20,15 @@
 
 ## 生命周期
 
-### `beforeCompile` <sup>deprecated</sup>
+### `beforeCompile` <sup>废弃</sup>
 
 使用`created`钩子代替.
 
-### `compiled` <sup>deprecated</sup>
+### `compiled` <sup>废弃</sup>
 
 使用`mounted`钩子代替
 
-### `attached` <sup>deprecated</sup>
+### `attached` <sup>废弃</sup>
 
 不再使用`attached`钩子，而是在其他钩子中做in-dom检测（不好翻译，意思大概是检测dom元素是否渲染完成），将
 
@@ -48,7 +48,7 @@ mounted: function () {
 }
 ```
 
-### `detached` <sup>deprecated</sup>
+### `detached` <sup>废弃</sup>
 
 不再使用`detached`钩子，而是在其他钩子中做in-dom检测，将
 
@@ -68,11 +68,11 @@ destroyed: function () {
 }
 ```
 
-### `init` <sup>deprecated</sup>
+### `init` <sup>废弃</sup>
 
 使用`beforeCreate`代替，本质上，`init`和`beforeCreate`是一回事。为保持生命周期命名的一致性，`init`钩子被重命名为`beforeCreate`
 
-### `ready` <sup>deprecated</sup>
+### `ready` <sup>废弃</sup>
 使用新的`mounted`钩子代替，注意，`mounted`钩子不保证组件元素已经渲染到文档中，因此，也需要调用`Vue.nextTick`/`vm.$nextTick`。如下所示
 
 ``` js
@@ -93,11 +93,11 @@ mounted: function () {
 
 当需要使用对象的键（`key`）时，过去的参数是`(key, value)`，现在则是`(value, key)`，它与一些常用的对象迭代器参数形式保持一致，比如[lodash](http://lodashjs.com/docs/#_forinobject-iteratee_identity-thisarg)
 
-### `$index` and `$key` <sup>deprecated</sup>
+### `$index` and `$key` <sup>废弃</sup>
 
 隐式参量`$index`和`$key`已被废弃，应在`v-for`表达式中显示定义，这样可以使代码易于阅读（尤其对于vue新手），并且使嵌套循环代码的行为更清晰。
 
-### `track-by` <sup>deprecated</sup>
+### `track-by` <sup>废弃</sup>
 
 属性`track-by`被`key`代替，`key`更像其他普通属性，没有`v-bind:`或者`:`前缀时被当做是一个字符串值字面量。大多数情况下，你想要动态绑定`key`的话，请使用`v-bind:`或者`:`前缀，如下所示
 
@@ -117,7 +117,7 @@ mounted: function () {
 
 ## Props
 
-### Prop验证选项`coerce`<sup>deprecated</sup>
+### Prop验证选项`coerce`<sup>废弃</sup>
 
 如果想要转换一个`prop`，请设置一个基于此`prop`的计算属性，如下所示
 
@@ -153,7 +153,7 @@ computed: {
 - 仍然可以获得`prop`的原始值
 - 显式定义转换后的`prop`名称，使得它和传入的`prop`有所区别
 
-### Prop`twoWay`选项<sup>deprecated</sup>
+### Prop`twoWay`选项<sup>废弃</sup>
 
 Props总是单向传递下来的。为了对父组件的作用域产生影响，组件应该显式地触发一个事件而非隐式的双向绑定数据，更多信息请查看
 
@@ -163,7 +163,7 @@ Props总是单向传递下来的。为了对父组件的作用域产生影响，
 
 - [Global state management](http://vuejs.org/guide/state-management.html)
 
-### 指令`v-bind`的修饰符`.once` and `.sync`<sup>deprecated</sup>
+### 指令`v-bind`的修饰符`.once` and `.sync`<sup>废弃</sup>
 
 Props总是单向传递下来的。为了对父组件的作用域产生影响，组件应该显式地触发一个事件而非隐式的双向绑定数据，更多信息请查看
 
@@ -173,7 +173,7 @@ Props总是单向传递下来的。为了对父组件的作用域产生影响，
 
 - [Global state management](http://vuejs.org/guide/state-management.html)
 
-### Prop变动 <sup>deprecated</sup>
+### Prop变动 <sup>废弃</sup>
 
 修改prop被认为是反模式（anti-pattern）,例如，申明一个prop并给他赋值`this.myProp = 'someOtherValue'`。基于更新机制，父组件一旦重新渲染，它的子组件的本地状态将会被覆写
 
@@ -183,7 +183,7 @@ Props总是单向传递下来的。为了对父组件的作用域产生影响，
 
 - 设置一个计算属性（如使用prop coerce选项的场景）
 
-### vue根组件上的Props<sup>deprecated</sup>
+### vue根组件上的Props<sup>废弃</sup>
 
 在vue根组件实例上（例如，使用`new Vue({ ... })`实例化的组件），申明prop时应该使用`propsData`，而不是`props`
 
@@ -206,7 +206,7 @@ Props总是单向传递下来的。为了对父组件的作用域产生影响，
 
 ```
 
-### `v-model` 与 `debounce` <sup>deprecated</sup>
+### `v-model` 与 `debounce` <sup>废弃</sup>
 
 debounce（去抖）一般被用来限制Ajax请求或其它高耗操作的执行频率。Vue的 `debounce`属性配合`v-model`指令可以在一些简单的场景很容易地实现去抖。但是，`debounce`实际上限制的是状态的更新频率而非高耗操作的执行频率，两者虽然差别细微，但是随着应用规模的增长，这种实现方式会成为页面性能的瓶颈这种局限性在实现一个搜索提示器时候尤其明显，如下例所示
 
@@ -305,7 +305,7 @@ new Vue({
 ```
 这种处理方式的另一个优点是可以自主选择节流/去抖包装函数。比如在提供搜索候选建议的时候，实际上更应该使用一个节流(throttle)函数而非去抖(debounce)函数，因为去抖总会在用户输入结束后一段时间才给出搜索建议，这是不太理想的。如果你使用了类似lodash的工具库，从`debounce`重构为`throttle`也是很方便的。
 
-### `v-model`与`lazy`或`number`属性 <sup>deprecated</sup>
+### `v-model`与`lazy`或`number`属性 <sup>废弃</sup>
 
 现在`lazy`和`number`属性应作为修饰符配合`v-model`指令使用，这样更清晰一些
 
@@ -325,7 +325,7 @@ new Vue({
 
 ```
 
-### `v-model`与行内`value`属性 <sup>deprecated</sup>
+### `v-model`与行内`value`属性 <sup>废弃</sup>
 
 `v-model`不再将value属性的值视为其初始值。为了更好的可预测性，它始终把vue实例作为数据源。
 
@@ -362,7 +362,7 @@ data: {
 所以需要确保`text`的初始值是"hello world"
 
 
-### `v-model`与`v-for`原始类型的遍历值 <sup>deprecated</sup>
+### `v-model`与`v-for`原始类型的遍历值 <sup>废弃</sup>
 
 下诉的表达式不再有效：
 
@@ -392,7 +392,7 @@ strings.map(function (str) {
 
 ```
 
-### `v-bind:style`在对象语法中使用`!important` <sup>deprecated</sup>
+### `v-bind:style`在对象语法中使用`!important` <sup>废弃</sup>
 
 下面的表达式不再有效
 
@@ -409,7 +409,7 @@ strings.map(function (str) {
 
 ```
 
-### `v-el` and `v-ref` <sup>deprecated</sup>
+### `v-el` and `v-ref` <sup>废弃</sup>
 
 为了更简洁，`v-el`和`v-ref`指令被合并到属性`ref`中，可以通过`$refs`在组件实例上获取。`v-el:my-element`变为`ref="myElement"`，`v-ref:my-component`变为`ref="myComponent"`。当在普通dom元素上使用时，ref将获取到dom元素，用于组件上时，将获取到组件实例。
 
@@ -432,7 +432,7 @@ strings.map(function (str) {
 另一方面，`$refs`本来是设计用来在代码里获取组件/dom元素的，因此不建议在模板里面过于依赖它，会引入不属于实例本身的状态，违反了数据驱动的view模型（不太理解，附上原文。On the other hand, `$refs` are designed primarily for programmatic access in JavaScript - it is not recommended to rely on them in templates, 
 because that would mean referring to state that does not belong to the instance itself. This would violate Vue's data-driven view model.）
 
-### `v-else`与`v-show` <sup>deprecated</sup>
+### `v-else`与`v-show` <sup>废弃</sup>
 
 `v-else`不再配合`v-show`使用（作用于同一个dom元素）。请使用`v-if`表达式替代。示例如下，
 
@@ -465,7 +465,7 @@ because that would mean referring to state that does not belong to the instance 
 
 幸运的是，新的指令系统简单的多，你可以更容易地掌握它们。[自定义指令教程](http://vuejs.org/guide/custom-directive.html)
 
-### 指令`.literal`修饰符 <sup>deprecated</sup>
+### 指令`.literal`修饰符 <sup>废弃</sup>
 
 指令`.literal`修饰符被移除了，因为直接传入一个字符串字面量可以更容易地达到同样的效果
 
@@ -487,48 +487,41 @@ because that would mean referring to state that does not belong to the instance 
 
 ## Transitions
 
-### `transition`属性 <sup>deprecated</sup>
+### `transition`属性 <sup>废弃</sup>
 
 Vue过渡效果（transition）体系完全改变了，现在使用`<transition>`和`<transition-group>`组件来作为包裹容器，而不是使用`transition`属性，了解更多的细节请阅读[Transitions教程](https://vuejs.org/guide/transitions.html)（内容异常丰富）。
 
-### 使用`Vue.transition`定义可重用的Transitions <sup>deprecated</sup>
+### 使用`Vue.transition`定义可重用的Transitions <sup>废弃</sup>
 
 在新的transition体系内，可以[使用组件来定义可重用的transition](http://rc.vuejs.org/guide/transitions.html#Reusable-Transitions)。
 
-### Transition渐进过渡属性`stagger` <sup>deprecated</sup>
+### Transition渐进过渡属性`stagger` <sup>废弃</sup>
 
 如果需要实现列表的渐进过渡效果，可以给元素设置`data-index`或者类似的属性，然后在transiton钩子函数中获取它来控制过渡开始的时间（delay）[一个示例](https://vuejs.org/guide/transitions.html#Staggering-List-Transitions)。
 
 
 ## Events
 
-### `events` option <sup>deprecated</sup>
+### `events`配置 <sup>废弃</sup>
 
-The `events` option has been deprecated. Event handlers should now be registered in the `created` hook instead. Check out the [`$dispatch` and `$broadcast` migration guide](#dispatch-and-broadcast-deprecated) for a detailed example.
+组件`events`配置项被废弃。事件处理器应在`created`钩子内注册。查看后文**`$dispatch`和`$broadcast`**获取详细信息
 
-### `Vue.directive('on').keyCodes` <sup>deprecated</sup>
+### `Vue.directive('on').keyCodes` <sup>废弃</sup>
 
-The new, more concise way to configure `keyCodes` is through`Vue.config.keyCodes`. For example:
+一个新的更简洁的方式配置`keyCodes`是通过`Vue.config.keyCodes`
 
 ``` js
 
 // enable v-on:keyup.f1
 
-Vue.config.keyCodes.f1 = 112
+Vue.config.keyCodes.f1 = 112 
 
 ```
 
-<div class="upgrade-path">
+### `$dispatch`和`$broadcast` <sup>废弃</sup>
 
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the the old <code>keyCode</code> configuration syntax.</p>
-
-</div>
-
-### `$dispatch` and `$broadcast` <sup>deprecated</sup>
-
-`$dispatch` and `$broadcast` are being deprecated in favor of more explicitly cross-component communication and more maintainable state management solutions, such as [Vuex](https://github.com/vuejs/vuex).
+`$dispatch`和`$broadcast`被废弃，目的是为了获得更好的跨组件，更可维护的状态管理方案，
+ are being deprecated in favor of more explicitly cross-component communication and more maintainable state management solutions, such as [Vuex](https://github.com/vuejs/vuex)。
 
 The problem is event flows that depend on a component's tree structure can be hard to reason about and very brittle when the tree becomes large. It simply doesn't scale well and we don't want to set you up for pain later. `$dispatch` and `$broadcast` also do not solve communication between sibling components.
 
@@ -662,7 +655,7 @@ This pattern can serve as a replacement for `$dispatch` and `$broadcast` in simp
 
 ## Filters
 
-### Filters Outside Text Interpolations <sup>deprecated</sup>
+### Filters Outside Text Interpolations <sup>废弃</sup>
 
 Filters can now only be used inside text interpolations (`{{ }}` tags). In the past we've found using filters within directives such as `v-model`, `v-on`, etc led to more complexity than convenience. For list filtering on `v-for`, it's also better to move that logic into JavaScript as computed properties, so that it can be reused throughout your component.
 
@@ -878,7 +871,7 @@ We surround the arguments with parentheses and delimit the arguments with commas
 
 </div>
 
-### Built-In Text Filters <sup>deprecated</sup>
+### Built-In Text Filters <sup>废弃</sup>
 
 Although filters within text interpolations are still allowed, all of the filters have been removed. Instead, it's recommended to use more specialized libraries for solving problems in each domain (e.g. [`date-fns`](https://date-fns.org/) to format dates and [`accounting`](http://openexchangerates.github.io/accounting.js/) for currencies).
 
@@ -958,7 +951,7 @@ In many cases though, you'll still run into strange behavior (e.g. `0.035.toFixe
 
 </div>
 
-### Two-Way Filters <sup>deprecated</sup>
+### Two-Way Filters <sup>废弃</sup>
 
 Some users have enjoyed using two-way filters with `v-model` to create interesting inputs with very little code. While _seemingly_ simple however, two-way filters can also hide a great deal of complexity - and even encourage poor UX by delaying state updates. Instead, components wrapping an input are recommended as a more explicit and feature-rich way of creating custom inputs.
 
@@ -1006,7 +999,7 @@ You may notice that:
 
 ## Slots
 
-### Duplicate Slots <sup>deprecated</sup>
+### Duplicate Slots <sup>废弃</sup>
 
 It is no longer supported to have `<slot>`s with the same name in the same template. When a slot is rendered it is "used up" and cannot be rendered elsewhere in the same render tree. If you must render the same content in multiple places, pass that content as a prop.
 
@@ -1018,7 +1011,7 @@ It is no longer supported to have `<slot>`s with the same name in the same templ
 
 </div>
 
-### `slot` Attribute Styling <sup>deprecated</sup>
+### `slot` Attribute Styling <sup>废弃</sup>
 
 Content inserted via named `<slot>` no longer preserves the `slot` attribute. Use a wrapper element to style them, or for advanced use cases, modify the inserted content programmatically using [render functions](render-function.html).
 
@@ -1032,7 +1025,7 @@ Content inserted via named `<slot>` no longer preserves the `slot` attribute. Us
 
 ## Special Attributes
 
-### `keep-alive` Attribute <sup>deprecated</sup>
+### `keep-alive` Attribute <sup>废弃</sup>
 
 `keep-alive` is no longer a special attribute, but rather a wrapper component, similar to `<transition>`. For example:
 
@@ -1088,7 +1081,7 @@ When used together with `<transition>`, make sure to nest it inside:
 
 ## Interpolation
 
-### Interpolation within Attributes <sup>deprecated</sup>
+### Interpolation within Attributes <sup>废弃</sup>
 
 Interpolation within attributes is no longer valid. For example:
 
@@ -1136,7 +1129,7 @@ computed: {
 
 </div>
 
-### HTML Interpolation <sup>deprecated</sup>
+### HTML Interpolation <sup>废弃</sup>
 
 HTML interpolations (`{{{ foo }}}`) have been deprecated in favor of the [`v-html` directive](/api/#v-html).
 
@@ -1148,7 +1141,7 @@ HTML interpolations (`{{{ foo }}}`) have been deprecated in favor of the [`v-htm
 
 </div>
 
-### One-Time Bindings <sup>deprecated</sup>
+### One-Time Bindings <sup>废弃</sup>
 
 One time bindings (`{{* foo }}`) have been deprecated in favor of the new [`v-once` directive](/api/#v-once).
 
@@ -1200,7 +1193,7 @@ The former `vm.$delete` behavior has been deprecated and it is now just an alias
 
 </div>
 
-### `Array.prototype.$set` <sup>deprecated</sup>
+### `Array.prototype.$set` <sup>废弃</sup>
 
 use Vue.set instead
 
@@ -1214,7 +1207,7 @@ use Vue.set instead
 
 </div>
 
-### `Array.prototype.$remove` <sup>deprecated</sup>
+### `Array.prototype.$remove` <sup>废弃</sup>
 
 Use `Array.prototype.splice` instead. For example:
 
@@ -1258,7 +1251,7 @@ methods: {
 
 </div>
 
-### `Vue.set` and `Vue.delete` on Vue instances <sup>deprecated</sup>
+### `Vue.set` and `Vue.delete` on Vue instances <sup>废弃</sup>
 
 Vue.set and Vue.delete can no longer work on Vue instances. It is now mandatory to properly declare all top-level reactive properties in the data option. If you'd like to delete properties on a Vue instance or its `$data`, just set it to null.
 
@@ -1270,7 +1263,7 @@ Vue.set and Vue.delete can no longer work on Vue instances. It is now mandatory 
 
 </div>
 
-### Replacing `vm.$data` <sup>deprecated</sup>
+### Replacing `vm.$data` <sup>废弃</sup>
 
 It is now prohibited to replace a component instance's root $data. This prevents some edge cases in the reactivity system and makes the component state more predictable (especially with type-checking systems).
 
@@ -1282,7 +1275,7 @@ It is now prohibited to replace a component instance's root $data. This prevents
 
 </div>
 
-### `vm.$get` <sup>deprecated</sup>
+### `vm.$get` <sup>废弃</sup>
 
 Just retrieve reactive data directly.
 
@@ -1296,7 +1289,7 @@ Just retrieve reactive data directly.
 
 ## DOM-Focused Instance Methods
 
-### `vm.$appendTo` <sup>deprecated</sup>
+### `vm.$appendTo` <sup>废弃</sup>
 
 Use the native DOM API:
 
@@ -1314,7 +1307,7 @@ myElement.appendChild(vm.$el)
 
 </div>
 
-### `vm.$before` <sup>deprecated</sup>
+### `vm.$before` <sup>废弃</sup>
 
 Use the native DOM API:
 
@@ -1332,7 +1325,7 @@ myElement.parentNode.insertBefore(vm.$el, myElement)
 
 </div>
 
-### `vm.$after` <sup>deprecated</sup>
+### `vm.$after` <sup>废弃</sup>
 
 Use the native DOM API:
 
@@ -1358,7 +1351,7 @@ myElement.parentNode.appendChild(vm.$el)
 
 </div>
 
-### `vm.$remove` <sup>deprecated</sup>
+### `vm.$remove` <sup>废弃</sup>
 
 Use the native DOM API:
 
@@ -1378,7 +1371,7 @@ vm.$el.remove()
 
 ## Meta Instance Methods
 
-### `vm.$eval` <sup>deprecated</sup>
+### `vm.$eval` <sup>废弃</sup>
 
 No real use. If you do happen to rely on this feature somehow and aren't sure how to work around it, post on [the forum](http://forum.vuejs.org/) for ideas.
 
@@ -1390,7 +1383,7 @@ No real use. If you do happen to rely on this feature somehow and aren't sure ho
 
 </div>
 
-### `vm.$interpolate` <sup>deprecated</sup>
+### `vm.$interpolate` <sup>废弃</sup>
 
 No real use. If you do happen to rely on this feature somehow and aren't sure how to work around it, post on [the forum](http://forum.vuejs.org/) for ideas.
 
@@ -1402,7 +1395,7 @@ No real use. If you do happen to rely on this feature somehow and aren't sure ho
 
 </div>
 
-### `vm.$log` <sup>deprecated</sup>
+### `vm.$log` <sup>废弃</sup>
 
 Use the [Vue Devtools](https://github.com/vuejs/vue-devtools) for the optimal debugging experience.
 
@@ -1416,7 +1409,7 @@ Use the [Vue Devtools](https://github.com/vuejs/vue-devtools) for the optimal de
 
 ## Instance DOM Options
 
-### `replace: false` <sup>deprecated</sup>
+### `replace: false` <sup>废弃</sup>
 
 Components now always replace the element they're bound to. To simulate the behavior of `replace: false`, you can wrap your root component with an element similar to the one you're replacing. For example:
 
@@ -1468,7 +1461,7 @@ new Vue({
 
 ## Global Config
 
-### `Vue.config.debug` <sup>deprecated</sup>
+### `Vue.config.debug` <sup>废弃</sup>
 
 No longer necessary, since warnings come with stack traces by default now.
 
@@ -1480,7 +1473,7 @@ No longer necessary, since warnings come with stack traces by default now.
 
 </div>
 
-### `Vue.config.async` <sup>deprecated</sup>
+### `Vue.config.async` <sup>废弃</sup>
 
 Async is now required for rendering performance.
 
@@ -1492,7 +1485,7 @@ Async is now required for rendering performance.
 
 </div>
 
-### `Vue.config.delimiters` <sup>deprecated</sup>
+### `Vue.config.delimiters` <sup>废弃</sup>
 
 This has been reworked as a [component-level option](/api/#delimiters). This allows you to use alternative delimiters within your app without breaking 3rd-party components.
 
@@ -1504,7 +1497,7 @@ This has been reworked as a [component-level option](/api/#delimiters). This all
 
 </div>
 
-### `Vue.config.unsafeDelimiters` <sup>deprecated</sup>
+### `Vue.config.unsafeDelimiters` <sup>废弃</sup>
 
 HTML interpolation has been [deprecated in favor of `v-html`](#HTML-Interpolation-deprecated).
 
@@ -1518,7 +1511,7 @@ HTML interpolation has been [deprecated in favor of `v-html`](#HTML-Interpolatio
 
 ## Global API
 
-### `Vue.extend` with `el` <sup>deprecated</sup>
+### `Vue.extend` with `el` <sup>废弃</sup>
 
 The el option can no longer be used in `Vue.extend`. It's only valid as an instance creation option.
 
@@ -1530,7 +1523,7 @@ The el option can no longer be used in `Vue.extend`. It's only valid as an insta
 
 </div>
 
-### `Vue.elementDirective` <sup>deprecated</sup>
+### `Vue.elementDirective` <sup>废弃</sup>
 
 Use components instead.
 
@@ -1542,7 +1535,7 @@ Use components instead.
 
 </div>
 
-### `Vue.partial` <sup>deprecated</sup>
+### `Vue.partial` <sup>废弃</sup>
 
 Partials have been deprecated in favor of more explicit data flow between components, using props. Unless you're using a partial in a performance-critical area, the recommendation is to simply use a [normal component](components.html) instead. If you were dynamically binding the `name` of a partial, you can use a [dynamic component](http://vuejs.org/guide/components.html#Dynamic-Components).
 
