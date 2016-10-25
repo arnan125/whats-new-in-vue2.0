@@ -526,52 +526,42 @@ Vue.config.keyCodes.f1 = 112
 
 这些事件方法最普遍的使用场景是父组件和它的直接子组件们通信。大多数情况下，你可以用`v-on`监听来自子组件的`$emit`行为（[listen to an `$emit` from a child with `v-on`](http://vuejs.org/guide/components.html#Form-Input-Components-using-Custom-Events)）。这样保持了事件的直观，便利。
 
-但是，当进行隔代组件之间的通信时，`$emit`方法并不有效。我们会使用一个集中式的事件容器（centralized event hub），它可以允许在组件树中的任何位置进行通信，甚至是同级组件间的通信。Vue的实例提供了一个事件发射接口，你可以生成一个空vue实例来使用它。
+但是，当进行隔代组件之间的通信时，`$emit`方法并不有效。我们会使用一个集中式的事件管理器（centralized event hub），它可以允许在组件树中的任何位置进行通信，甚至是同级组件间的通信。实现的思路之一：Vue的实例提供了一个事件触发器，因此你可以创建一个空vue实例来作为这个事件管理器。
 
-For example, let's say we have a todo app structured like this:
+比如，一个土豆（todo）app的结构如下 
 
 ```
 
 Todos
-
 |-- NewTodoInput
-
 |-- Todo
-
- |-- DeleteTodoButton
+|-- DeleteTodoButton
 
 ```
 
-We could manage communication between components with this single event hub:
+我们可以用一个事件管理器管理组件间的通信：
 
 ``` js
 
 // This is the event hub we'll use in every
-
 // component to communicate between them.
 
 var eventHub = new Vue()
 
 ```
 
-Then in our components, we can use `$emit`, `$on`, `$off` to emit events, listen for events, and clean up event listeners, respectively:
+在组件中，我们可以分别使用`$emit`，`$on`，`$off`触发事件、监听事件、解绑事件
 
 ``` js
 
 // NewTodoInput
-
 // ...
 
 methods: {
-
- addTodo: function () {
-
- eventHub.$emit('add-todo', { text: this.newTodoText })
-
- this.newTodoText = ''
-
- }
-
+  addTodo: function () {
+    eventHub.$emit('add-todo', { text: this.newTodoText })
+    this.newTodoText = ''
+  }
 }
 
 ```
@@ -579,17 +569,12 @@ methods: {
 ``` js
 
 // DeleteTodoButton
-
 // ...
 
 methods: {
-
- deleteTodo: function (id) {
-
- eventHub.$emit('delete-todo', id)
-
- }
-
+  deleteTodo: function (id) {
+    eventHub.$emit('delete-todo', id)
+  }
 }
 
 ```
@@ -597,52 +582,35 @@ methods: {
 ``` js
 
 // Todos
-
 // ...
 
 created: function () {
-
- eventHub.$on('add-todo', this.addTodo)
-
- eventHub.$on('delete-todo', this.deleteTodo)
-
+  eventHub.$on('add-todo', this.addTodo)
+  eventHub.$on('delete-todo', this.deleteTodo)
 },
 
 // It's good to clean up event listeners before
-
 // a component is destroyed.
 
 beforeDestroy: function () {
-
- eventHub.$off('add-todo', this.addTodo)
-
- eventHub.$off('delete-todo', this.deleteTodo)
-
+  eventHub.$off('add-todo', this.addTodo)
+  eventHub.$off('delete-todo', this.deleteTodo)
 },
 
 methods: {
-
- addTodo: function (newTodo) {
-
- this.todos.push(newTodo)
-
- },
-
- deleteTodo: function (todoId) {
-
- this.todos = this.todos.filter(function (todo) {
-
- return todo.id !== todoId
-
- })
-
- }
-
+  addTodo: function (newTodo) {
+    this.todos.push(newTodo)
+  },
+  deleteTodo: function (todoId) {
+    this.todos = this.todos.filter(function (todo) {
+      return todo.id !== todoId
+    })
+  }
 }
 
 ```
 
-This pattern can serve as a replacement for `$dispatch` and `$broadcast` in simple scenarios, but for more complex cases, it's recommended to use a dedicated state management layer such as [Vuex](https://github.com/vuejs/vuex).
+这种模式可以在比较简单的场景下作为`$dispatch` and `$broadcast`的替代，在更复杂的场景下，建议使用专用的状态管理工具比如[Vuex](https://github.com/vuejs/vuex)。 
 
 <div class="upgrade-path">
 
