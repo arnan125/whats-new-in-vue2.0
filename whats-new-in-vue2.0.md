@@ -612,25 +612,16 @@ methods: {
 
 这种模式可以在比较简单的场景下作为`$dispatch`和`$broadcast`的替代，在更复杂的场景下，建议使用专用的状态管理工具比如[Vuex](https://github.com/vuejs/vuex)。 
 
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of <code>$dispatch</code> and <code>$broadcast</code>.</p>
-
-</div>
-
 ## Filters
+### 文本插入以外的过滤器<sup>废弃</sup>
 
-### Filters Outside Text Interpolations <sup>废弃</sup>
+现在过滤器只能用于文本插入（`{{ }}`）标签内。先前将过滤器用于`v-model`、`v-on`等指令内造成的麻烦比带来的便利要多得；在`v-for`指令中使用过滤器也不如在js中使用计算属性来得复用性好。
 
-Filters can now only be used inside text interpolations (`{{ }}` tags). In the past we've found using filters within directives such as `v-model`, `v-on`, etc led to more complexity than convenience. For list filtering on `v-for`, it's also better to move that logic into JavaScript as computed properties, so that it can be reused throughout your component.
+通常，如果某些功能可以通过纯js代码实现，就尽量避免引入特殊的语法比如过滤器去做相应处理。以下介绍如何来替换这些内建的过滤器。
 
-In general, whenever something can be achieved in plain JavaScript, we want to avoid introducing a special syntax like filters to take care of the same concern. Here's how you can replace Vue's built-in directive filters:
+#### 替代`debounce`过滤器
 
-#### Replacing the `debounce` Filter
-
-Instead of:
+不再使用
 
 ``` html
 
@@ -641,18 +632,14 @@ Instead of:
 ``` js
 
 methods: {
-
- doStuff: function () {
-
- // ...
-
- }
-
+  doStuff: function () {
+  // ...
+  }
 }
 
 ```
 
-Use [lodash's `debounce`](https://lodash.com/docs/4.15.0#debounce) (or possibly [`throttle`](https://lodash.com/docs/4.15.0#throttle)) to directly limit calling the expensive method. You can achieve the same as above like this:
+而是使用[lodash's `debounce`](https://lodash.com/docs/4.15.0#debounce)（或者可以节流[`throttle`](https://lodash.com/docs/4.15.0#throttle)的工具）直接限制高耗操作的调用.可以像下面这样实现上面的dobounce功能：
 
 ``` html
 
@@ -663,22 +650,18 @@ Use [lodash's `debounce`](https://lodash.com/docs/4.15.0#debounce) (or possibly 
 ``` js
 
 methods: {
-
- doStuff: _.debounce(function () {
-
- // ...
-
- }, 500)
-
+  doStuff: _.debounce(function () {
+  // ...
+  }, 500)
 }
 
 ```
 
-For more on the advantages of this strategy, see [the example here with `v-model`](#v-model-with-debounce-deprecated).
+了解这种实现方式的更多好处可以查看前文**`v-model` 与 `debounce`**
 
-#### Replacing the `limitBy` Filter
+#### 替代`limitBy`过滤器
 
-Instead of:
+不再使用
 
 ``` html
 
@@ -686,7 +669,7 @@ Instead of:
 
 ```
 
-Use JavaScript's built-in [`.slice` method](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice#Examples) in a computed property:
+而是在一个计算属性里使用js原生[`.slice`方法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice#Examples):
 
 ``` html
 
@@ -697,20 +680,16 @@ Use JavaScript's built-in [`.slice` method](https://developer.mozilla.org/en-US/
 ``` js
 
 computed: {
-
- filteredItems: function () {
-
- return this.items.slice(0, 10)
-
- }
-
+  filteredItems: function () {
+    return this.items.slice(0, 10)
+  }
 }
 
 ```
 
-#### Replacing the `filterBy` Filter
+#### 替代`filterBy`过滤器
 
-Instead of:
+不再使用
 
 ``` html
 
@@ -718,7 +697,7 @@ Instead of:
 
 ```
 
-Use JavaScript's built-in [`.filter` method](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter#Examples) in a computed property:
+而是在一个计算属性里使用js原生[`.filter`方法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter#Examples)：
 
 ``` html
 
@@ -729,44 +708,32 @@ Use JavaScript's built-in [`.filter` method](https://developer.mozilla.org/en-US
 ``` js
 
 computed: {
-
- filteredUsers: function () {
-
- return this.users.filter(function (user) {
-
- return user.name.indexOf(this.searchQuery)
-
- })
-
- }
-
+  filteredUsers: function () {
+    return this.users.filter(function (user) {
+       return user.name.indexOf(this.searchQuery)
+    })
+  }
 }
 
 ```
 
-JavaScript's native `.filter` can also manage much more complex filtering operations, because you have access to the full power of JavaScript within computed properties. For example, if you wanted to find all active users and case-insensitively match against both their name and email:
+js的原生`.filter`方法可以在计算属性里处理更复杂的过滤操作，能发挥出js的全部的能力。例如过滤出所有激活且他们的邮箱或名字能大小写不敏感地匹配搜索关键字的用户。
 
 ``` js
 
 this.users.filter(function (user) {
-
- var searchRegex = new RegExp(this.searchQuery, 'i')
-
- return user.isActive && (
-
- searchRegex.test(user.name) ||
-
- searchRegex.test(user.email)
-
- )
-
+  var searchRegex = new RegExp(this.searchQuery, 'i')
+  return user.isActive && (
+    searchRegex.test(user.name) ||
+    searchRegex.test(user.email)
+  )
 })
 
 ```
 
-#### Replacing the `orderBy` Filter
+#### 替代`orderBy`过滤器
 
-Instead of:
+不再使用
 
 ``` html
 
@@ -774,7 +741,7 @@ Instead of:
 
 ```
 
-Use [lodash's `orderBy`](https://lodash.com/docs/4.15.0#orderBy) (or possibly [`sortBy`](https://lodash.com/docs/4.15.0#sortBy)) in a computed property:
+而是在一个计算属性里使用[lodash's `orderBy`](https://lodash.com/docs/4.15.0#orderBy)（或者类似的排序的工具）：
 
 ``` html
 
@@ -785,18 +752,13 @@ Use [lodash's `orderBy`](https://lodash.com/docs/4.15.0#orderBy) (or possibly [`
 ``` js
 
 computed: {
-
- orderedUsers: function () {
-
- return _.orderBy(this.users, 'name')
-
- }
-
+  orderedUsers: function () {
+    return _.orderBy(this.users, 'name')
+  }
 }
 
 ```
-
-You can even order by multiple columns:
+甚至可以依据多条件排序：
 
 ``` js
 
@@ -804,17 +766,9 @@ _.orderBy(this.users, ['name', 'last_login'], ['asc', 'desc'])
 
 ```
 
-<div class="upgrade-path">
+### 过滤器参数语法
 
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of filters being used inside directives. If you miss any, you should also see <strong>console errors</strong>.</p>
-
-</div>
-
-### Filter Argument Syntax
-
-Filters' syntax for arguments now better aligns with JavaScript function invocation. So instead of taking space-delimited arguments:
+过滤器参数语法现在更类似于js的函数调用，先前用空格隔开参数的方式不再使用
 
 ``` html
 
@@ -822,7 +776,7 @@ Filters' syntax for arguments now better aligns with JavaScript function invocat
 
 ```
 
-We surround the arguments with parentheses and delimit the arguments with commas:
+使用空格包裹所有参数，参数之间用逗号分隔：
 
 ``` html
 
@@ -830,25 +784,17 @@ We surround the arguments with parentheses and delimit the arguments with commas
 
 ```
 
-<div class="upgrade-path">
+### 内建的文本过滤器<sup>废弃</sup>
 
- <h4>Upgrade Path</h4>
+虽然文本插入标签被还是允许使用过滤器的，但是这个内建的文本过滤器全被移除。建议使用专门的工具库实现日期格式装换（[`date-fns`](https://date-fns.org/)）或者货币处理（[`accounting`](http://openexchangerates.github.io/accounting.js/)）等
 
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the old filter syntax. If you miss any, you should also see <strong>console errors</strong>.</p>
+我们提供了每个原有内建文本过滤器的替换方式，可以将他们使用在自定义帮助函数中、方法、计算属性中。
 
-</div>
+#### 替代`json`过滤器
 
-### Built-In Text Filters <sup>废弃</sup>
+实际上，根本不需要将debug信息转成json字符串，vue自动会做这些事，无论是什么类型的数据。如果还是需要这种功能，可以在方法或者计算属性内使用`JSON.stringify`。
 
-Although filters within text interpolations are still allowed, all of the filters have been removed. Instead, it's recommended to use more specialized libraries for solving problems in each domain (e.g. [`date-fns`](https://date-fns.org/) to format dates and [`accounting`](http://openexchangerates.github.io/accounting.js/) for currencies).
-
-For each of Vue's built-in text filters, we go through how you can replace them below. The example code could exist in custom helper functions, methods, or computed properties.
-
-#### Replacing the `json` Filter
-
-You actually don't need to for debugging anymore, as Vue will nicely format output for you automatically, whether it's a string, number, array, or plain object. If you want the exact same functionality as JavaScript's `JSON.stringify` though, then you can use that in a method or computed property.
-
-#### Replacing the `capitalize` Filter
+#### 替代`capitalizejson`过滤器
 
 ``` js
 
@@ -856,7 +802,7 @@ text[0].toUpperCase() + text.slice(1)
 
 ```
 
-#### Replacing the `uppercase` Filter
+#### 替代`uppercase`过滤器
 
 ``` js
 
@@ -864,7 +810,7 @@ text.toUpperCase()
 
 ```
 
-#### Replacing the `lowercase` Filter
+#### 替代`lowercase`过滤器
 
 ``` js
 
@@ -872,7 +818,7 @@ text.toLowerCase()
 
 ```
 
-#### Replacing the `pluralize` Filter
+#### 替代`pluralize`过滤器
 
 The [pluralize](https://www.npmjs.com/package/pluralize) package on NPM serves this purpose nicely, but if you only want to pluralize a specific word or want to have special output for cases like `0`, then you can also easily define your own pluralize functions. For example:
 
@@ -910,13 +856,6 @@ For a very naive implementation, you could just do something like this:
 
 In many cases though, you'll still run into strange behavior (e.g. `0.035.toFixed(2)` rounds up to `0.4`, but `0.045` rounds down to `0.4`). To work around these issues, you can use the [`accounting`](http://openexchangerates.github.io/accounting.js/) library to more reliably format currencies.
 
-<div class="upgrade-path">
-
- <h4>Upgrade Path</h4>
-
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of the deprecated text filters. If you miss any, you should also see <strong>console errors</strong>.</p>
-
-</div>
 
 ### Two-Way Filters <sup>废弃</sup>
 
@@ -956,13 +895,23 @@ You may notice that:
 
 - Since we're no longer using filter options that require a value to be returned, our currency work could actually be done asynchronously. That means if we had a lot of apps that had to work with currencies, we could easily refactor this logic into a shared microservice.
 
-<div class="upgrade-path">
 
- <h4>Upgrade Path</h4>
 
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find examples of filters used in directives like <code>v-model</code>. If you miss any, you should also see <strong>console errors</strong>.</p>
 
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Slots
 
