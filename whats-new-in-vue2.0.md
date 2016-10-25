@@ -504,11 +504,11 @@ Vue过渡效果（transition）体系完全改变了，现在使用`<transition>
 
 ### `events`配置 <sup>废弃</sup>
 
-组件`events`配置项被废弃。事件处理器应在`created`钩子内注册。查看后文**`$dispatch`和`$broadcast`**获取详细信息
+组件`events`配置项被废弃。事件处理器（Event handlers）应在`created`钩子内注册。查看后文**`$dispatch`和`$broadcast`**获取详细信息
 
 ### `Vue.directive('on').keyCodes` <sup>废弃</sup>
 
-一个新的更简洁的方式配置`keyCodes`是通过`Vue.config.keyCodes`
+一个新的更简洁的`keyCodes`配置方式是`Vue.config.keyCodes`
 
 ``` js
 
@@ -520,14 +520,13 @@ Vue.config.keyCodes.f1 = 112
 
 ### `$dispatch`和`$broadcast` <sup>废弃</sup>
 
-`$dispatch`和`$broadcast`被废弃，目的是为了获得更好的跨组件，更可维护的状态管理方案，
- are being deprecated in favor of more explicitly cross-component communication and more maintainable state management solutions, such as [Vuex](https://github.com/vuejs/vuex)。
+`$dispatch`和`$broadcast`被废弃，更利于跨组件通信和以及引入可维护性更好的状态管理方案，比如[Vuex](https://github.com/vuejs/vuex)。
 
-The problem is event flows that depend on a component's tree structure can be hard to reason about and very brittle when the tree becomes large. It simply doesn't scale well and we don't want to set you up for pain later. `$dispatch` and `$broadcast` also do not solve communication between sibling components.
+先前事件系统的问题在于事件流依赖于组件树的结构，当组件树的规模变得太大以后，事件流很难追溯，非常脆弱。这一切都是因为当初没有规划好，我们不想继续使你为此感到痛苦。另外`$dispatch`和`$broadcast`也不能进行同级组件间的通信。
 
-One of the most common uses for these methods is to communicate between a parent and its direct children. In these cases, you can actually [listen to an `$emit` from a child with `v-on`](http://vuejs.org/guide/components.html#Form-Input-Components-using-Custom-Events). This allows you to keep the convenience of events with added explicitness.
+这些事件方法最普遍的使用场景是父组件和它的直接子组件们通信。大多数情况下，你可以用`v-on`监听来自子组件的`$emit`行为（[listen to an `$emit` from a child with `v-on`](http://vuejs.org/guide/components.html#Form-Input-Components-using-Custom-Events)）。这样保持了事件的直观，便利。
 
-However, when communicating between distant descendants/ancestors, `$emit` won't help you. Instead, the simplest possible upgrade would be to use a centralized event hub. This has the added benefit of allowing you to communicate between components no matter where they are in the component tree - even between siblings! Because Vue instances implement an event emitter interface, you can actually use an empty Vue instance for this purpose.
+但是，当进行隔代组件之间的通信时，`$emit`方法并不有效。我们会使用一个集中式的事件容器（centralized event hub），它可以允许在组件树中的任何位置进行通信，甚至是同级组件间的通信。Vue的实例提供了一个事件发射接口，你可以生成一个空vue实例来使用它。
 
 For example, let's say we have a todo app structured like this:
 
