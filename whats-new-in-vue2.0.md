@@ -208,49 +208,11 @@ Props总是单向传递下来的。为了对父组件的作用域产生影响，
 
 ### `v-model` 与 `debounce` <sup>废弃</sup>
 
-debounce（去抖）一般被用来限制Ajax请求或其它高耗操作的执行频率。Vue的 `debounce`属性配合`v-model`指令可以在一些简单的场景很容易地实现去抖。但是，`debounce`实际上限制的是状态的更新频率而非高耗操作的执行频率，两者虽然差别细微，但是随着应用规模的增长，这种实现方式会成为页面性能的瓶颈这种局限性在实现一个搜索提示器时候尤其明显，如下例所示
+debounce（去抖）一般被用来限制Ajax请求或其它高耗操作的执行频率。Vue的 `debounce`属性配合`v-model`指令可以在一些简单的场景很容易地实现去抖。但是，`debounce`实际上限制的是状态的更新频率而非高耗操作的执行频率，两者虽然差别细微，但是随着应用规模的增长，这种实现方式局限性越发显著。
 
-``` html
-
-<script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.js"></script>
-<div id="debounce-search-demo" class="demo">
-    <input v-model="searchQuery" placeholder="Type something"> <strong>{{ searchIndicator }}</strong></div>
-<script>
-new Vue({
-    el: '#debounce-search-demo',
-    data: {
-        searchQuery: '',
-        searchQueryIsDirty: false,
-        isCalculating: false
-    },
-    computed: {
-        searchIndicator: function() {
-            if (this.isCalculating) {
-                return '⟳ Fetching new results'
-            } else if (this.searchQueryIsDirty) {
-                return '... Typing'
-            } else {
-                return '✓ Done'
-            }
-        }
-    },
-    watch: {
-        searchQuery: function() {
-            this.searchQueryIsDirty = true this.expensiveOperation()
-        }
-    },
-    methods: {
-        expensiveOperation: _.debounce(function() {
-            this.isCalculating = true setTimeout(function() {
-                this.isCalculating = false this.searchQueryIsDirty = false
-            }.bind(this), 1000)
-        }, 500)
-    }
-})
-</script>
-
-```
 使用`debounce`属性时，因为不能实时获取输入框的状态，将不能(准确)检测到输入状态。将去抖（debounce）从Vue中解耦，使得可以仅仅限制高耗操作本身的执行，而不会有其他的局限性。
+
+下例是一个搜索提示器的实现
 
 ``` html
 <!--
@@ -615,7 +577,7 @@ methods: {
 ## Filters
 ### 文本插入以外的过滤器<sup>废弃</sup>
 
-现在过滤器只能用于文本插入（`{{ }}`）标签内。先前将过滤器用于`v-model`、`v-on`等指令内造成的麻烦比带来的便利要多得；在`v-for`指令中使用过滤器也不如在js中使用计算属性来得复用性好。
+现在过滤器只能用于文本插入（`{{ }}`）标签内。先前将过滤器用于`v-model`、`v-on`等指令内造成的麻烦比带来的便利要多；在`v-for`指令中使用过滤器也不如在js中使用计算属性来得复用性好。
 
 通常，如果某些功能可以通过纯js代码实现，就尽量避免引入特殊的语法比如过滤器去做相应处理。以下介绍如何来替换这些内建的过滤器。
 
@@ -776,7 +738,7 @@ _.orderBy(this.users, ['name', 'last_login'], ['asc', 'desc'])
 
 ```
 
-使用空格包裹所有参数，参数之间用逗号分隔：
+使用括号包裹所有参数，参数之间用逗号分隔：
 
 ``` html
 
