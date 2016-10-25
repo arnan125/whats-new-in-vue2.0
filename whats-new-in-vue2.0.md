@@ -610,7 +610,7 @@ methods: {
 
 ```
 
-这种模式可以在比较简单的场景下作为`$dispatch` and `$broadcast`的替代，在更复杂的场景下，建议使用专用的状态管理工具比如[Vuex](https://github.com/vuejs/vuex)。 
+这种模式可以在比较简单的场景下作为`$dispatch`和`$broadcast`的替代，在更复杂的场景下，建议使用专用的状态管理工具比如[Vuex](https://github.com/vuejs/vuex)。 
 
 <div class="upgrade-path">
 
