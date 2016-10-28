@@ -756,7 +756,7 @@ _.orderBy(this.users, ['name', 'last_login'], ['asc', 'desc'])
 
 实际上，根本不需要将debug信息转成json字符串，vue自动会做这些事，无论是什么类型的数据。如果还是需要这种功能，可以在方法或者计算属性内使用`JSON.stringify`。
 
-#### 替代`capitalizejson`过滤器
+#### 替代`capitalize`过滤器
 
 ``` js
 
@@ -782,70 +782,60 @@ text.toLowerCase()
 
 #### 替代`pluralize`过滤器
 
-The [pluralize](https://www.npmjs.com/package/pluralize) package on NPM serves this purpose nicely, but if you only want to pluralize a specific word or want to have special output for cases like `0`, then you can also easily define your own pluralize functions. For example:
+[pluralize](https://www.npmjs.com/package/pluralize)npm包可以很好的实现“复数化”这个功能。如果只是想要处理特定语汇的复数形式或者仅仅是处理输出为“零”的情况，可以自定义一个pluralize方法，例如：
 
 ``` js
 
 function pluralizeKnife (count) {
-
- if (count === 0) {
-
- return 'no knives'
-
- } else if (count === 1) {
-
- return '1 knife'
-
- } else {
-
- return count + 'knives'
-
- }
-
+  if (count === 0) {
+    return 'no knives'
+  } else if (count === 1) {
+    return '1 knife'
+  } else {
+    return count + 'knives'
+  }
 }
 
 ```
 
 #### Replacing the `currency` Filter
 
-For a very naive implementation, you could just do something like this:
-
+一个非常简单的实现如下
+  
 ``` js
 
 '$' + price.toFixed(2)
 
 ```
 
-In many cases though, you'll still run into strange behavior (e.g. `0.035.toFixed(2)` rounds up to `0.4`, but `0.045` rounds down to `0.4`). To work around these issues, you can use the [`accounting`](http://openexchangerates.github.io/accounting.js/) library to more reliably format currencies.
+在很多情况下，`toFixed`方法会出现一些怪异行为，比如`0.035.toFixed(2)`向上舍入为0.4，但是`0.045.toFixed(2)`向下舍入为0.4。为了解决这个问题，可以使用[`accounting`](http://openexchangerates.github.io/accounting.js/)获得更可靠的货币格式化结果。
 
+### 双向过滤器 <sup>废弃</sup>
 
-### Two-Way Filters <sup>废弃</sup>
+一些用户喜欢配合`v-model`使用双向过滤器来实现一些有趣的输入，只需要很少的几行代码。但这只是一个看上去简单的方式，双向过滤器会造成大量不易察觉的复杂性，甚至因为状态更新的延迟带来糟糕的用户体验。建议使用组件包装`input`标签，这是一种更显式、更功能丰富的自定义输入组件解决方案。
 
-Some users have enjoyed using two-way filters with `v-model` to create interesting inputs with very little code. While _seemingly_ simple however, two-way filters can also hide a great deal of complexity - and even encourage poor UX by delaying state updates. Instead, components wrapping an input are recommended as a more explicit and feature-rich way of creating custom inputs.
-
-As an example, we'll now walk the migration of a two-way currency filter:
+下面是一个双向过滤器的迁移示例：
 
 <iframe width="100%" height="300" src="https://jsfiddle.net/chrisvfritz/6744xnjk/embedded/js,html,result" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-It mostly works well, but the delayed state updates can cause strange behavior. For example, click on the `Result` tab and try entering `9.999` into one of those inputs. When the input loses focus, its value will update to `$10.00`. When looking at the calculated total however, you'll see that `9.999` is what's stored in our data. The version of reality that the user sees is out of sync!
+在多数情况下，它都能正常工作，但是由于状态的延迟更新会造成一些怪异的行为。比如，切换到上面的demo到Result页面，在任意一个输入框中输入`9.999`，当输入框失焦以后，它的值会更新为`$10.00`，但是计算结果却是`9.999`，也就是说输入框实际存储值为`9.999`,实际数据和用户感知并不同步。
 
-To start transitioning towards a more robust solution using Vue 2.0, let's first wrap this filter in a new `<currency-input>` component:
+以下使用Vue2.0来实现一个更健壮的解决方案。首先用`<currency-input>`组件包裹这个双向过滤器：
 
 <iframe width="100%" height="300" src="https://jsfiddle.net/chrisvfritz/943zfbsh/embedded/js,html,result" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-This allows us add behavior that a filter alone couldn't encapsulate, such as selecting the content of an input on focus. Now the next step will be to extract the business logic from the filter. Below, we pull everything out into an external [`currencyValidator` object](https://gist.github.com/chrisvfritz/5f0a639590d6e648933416f90ba7ae4e):
+这样可以允许添加一些过滤器单独不能封装的功能，比如选择在输入框获得焦点以后选中全部文本。下一步是提取过滤器的业务逻辑。通过引入一个外部依赖[`currencyValidator`](https://gist.github.com/chrisvfritz/5f0a639590d6e648933416f90ba7ae4e)来实现所有操作：
 
 <iframe width="100%" height="300" src="https://jsfiddle.net/chrisvfritz/9c32kev2/embedded/js,html,result" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-This increased modularity not only makes it easier to migrate to Vue 2, but also allows currency parsing and formatting to be:
+模块化的增强不仅使过滤器更易于向Vue2.0迁移，也让货币值解析和格式化可以：
 
-- unit tested in isolation from your Vue code
+- 独立于vue进行单元测试
+- 用于应用的其他部分，比如api请求的参数校验。
 
-- used by other parts of your application, such as to validate the payload to an API endpoint
+将验证器抽取出来，利于更顺畅地构建一个健壮的解决方案。异常的状态都被排除，实际上用户不会不会输入任何错误内容。
 
-Having this validator extracted out, we've also more comfortably built it up into a more robust solution. The state quirks have been eliminated and it's actually impossible for users to enter anything wrong, similar to what the browser's native number input tries to do.
-
-We're still limited however, by filters and by Vue 1.0 in general, so let's complete the upgrade to Vue 2.0:
+最后一步，升级到Vue2.0
 
 <iframe width="100%" height="300" src="https://jsfiddle.net/chrisvfritz/1oqjojjx/embedded/js,html,result" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
