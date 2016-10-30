@@ -839,57 +839,42 @@ function pluralizeKnife (count) {
 
 <iframe width="100%" height="300" src="https://jsfiddle.net/chrisvfritz/1oqjojjx/embedded/js,html,result" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-You may notice that:
+也许你应经注意到了：
 
-- Every aspect of our input is more explicit, using lifecycle hooks and DOM events in place of the hidden behavior of two-way filters.
+- 使用生命周期钩子函数和DOM事件来替代隐式的双向过滤器操作，写入和读取过程都更明晰
 
-- We can now use `v-model` directly on our custom inputs, which is not only more consistent with normal inputs, but also means our component is Vuex-friendly.
+- 仍然可以直接在自定义input组件上使用`v-model`指令，不仅与普通输入框保持一致，而且是Vuex友好的。
 
-- Since we're no longer using filter options that require a value to be returned, our currency work could actually be done asynchronously. That means if we had a lot of apps that had to work with currencies, we could easily refactor this logic into a shared microservice.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- 由于我们不使用过滤器，货币格式化处理可以异步进行，这意味着如果有很多app需要处理诸如货币格式化的问题，可以很容易地将其重构为一个共享的微服务。
 
 
 ## Slots
 
-### Duplicate Slots <sup>废弃</sup>
+### 重复插槽Slots <sup>废弃</sup>
 
-It is no longer supported to have `<slot>`s with the same name in the same template. When a slot is rendered it is "used up" and cannot be rendered elsewhere in the same render tree. If you must render the same content in multiple places, pass that content as a prop.
+同一个template里不再支持同名的`<slot>`。当一个`slot`被渲染过后，就不能在同一渲染树（render tree）再次渲染。如果非要在template里不同位置渲染相同内容，请将内容作为prop传入。
 
-<div class="upgrade-path">
+### `slot`属性用于css样式（选择器） <sup>废弃</sup>
 
- <h4>Upgrade Path</h4>
+通过具名`<slot>`插入的内容不再保留`slot`属性（因此不再能用`[slot="my-slot-name"]`定义样式了）。使用一个包裹元素来定义样式，或者以编程方式
+使用[渲染函数](http://vuejs.org/guide/render-function.html)来控制插入内容。
 
- <p>Run your end-to-end test suite or app after upgrading and look for <strong>console warnings</strong> about duplicate slots <code>v-model</code>.</p>
 
-</div>
 
-### `slot` Attribute Styling <sup>废弃</sup>
 
-Content inserted via named `<slot>` no longer preserves the `slot` attribute. Use a wrapper element to style them, or for advanced use cases, modify the inserted content programmatically using [render functions](render-function.html).
 
-<div class="upgrade-path">
 
- <h4>Upgrade Path</h4>
 
- <p>Run the <a href="https://github.com/vuejs/vue-migration-helper">migration helper</a> on your codebase to find CSS selectors targeting named slots (e.g. <code>[slot="my-slot-name"]</code>).</p>
 
-</div>
+
+
+
+
+
+
+
+
+
 
 ## Special Attributes
 
