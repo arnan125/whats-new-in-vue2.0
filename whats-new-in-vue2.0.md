@@ -1,3 +1,8 @@
+# vue2.0新特性汇总
+
+vue2.0新特性汇总，译自官方文档[Migration from Vue 1.x](http://vuejs.org/guide/migration.html)。文章主要介绍了从vue1.0到2.0发生的一些变化，旨在为项目迁移作一定参考。当然，如果只是简单地想要让vue1.0项目在vue2.0环境运行起来，可以使用官方迁移工具[vue-migration-helper](https://github.com/vuejs/vue-migration-helper)。
+
+
 ## Templates
 
 ### 片断实例 <sup>废弃</sup>
@@ -808,7 +813,7 @@ function pluralizeKnife (count) {
 
 ```
 
-在很多情况下，`toFixed`方法会出现一些怪异行为，比如`0.035.toFixed(2)`向上舍入为0.4，但是`0.045.toFixed(2)`向下舍入为0.4。为了解决这个问题，可以使用[`accounting`](http://openexchangerates.github.io/accounting.js/)获得更可靠的货币格式化结果。
+在很多情况下，`toFixed`方法会出现一些怪异行为，比如`0.035.toFixed(2)`向上舍入为0.04，但是`0.045.toFixed(2)`却向下舍入为0.04。为了解决这个问题，可以使用[`accounting`](http://openexchangerates.github.io/accounting.js/)获得更可靠的货币格式化结果。
 
 ### 双向过滤器 <sup>废弃</sup>
 
@@ -1151,3 +1156,7 @@ partial（html片段）被废弃。除用于性能关键（performance-critical�
 如果确实是用于性能关键场景，可以使用[functional components](render-function.html#Functional-Components)。这种组件无状态，无实例（内部不能用this访问），常常是JS/JSX文件而不是`.vue`文件，就像partials一样（似乎在1.0文档里没有明确提到过partials渲染性能高的特性，但是也可以想象得出来），渲染速度回极快。
 
 functional components优于partials的地方在于它可以更灵活（dynamic），因为可以使用JavaScript的全部功能。但是如果从来没有使用过具有渲染函数的组件框架（React应该算是吧），也许需要花点功夫去学习学习。
+
+
+
+水平有限，译文在尽量尊重原文的原则下保证中文表达的顺畅，如有不妥，欢迎[邮件](mailto:weimingyuan@163.com)或[PR](https://github.com/arnan125/whats-new-in-vue2.0)
