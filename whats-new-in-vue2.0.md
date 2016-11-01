@@ -199,7 +199,7 @@ Props总是单向传递下来的。为了对父组件的作用域产生影响，
 当使用`v-bind`时，只有`null`、`undefined`和`false`是假值（Falsiness），也就意味着`0`和空字符串会被解析为真值（truthy）。例如，`v-bind:draggable="''"` 会被解析为 as `draggable="true"`
 对于枚举属性，除了上述假值，字符串 `"false"`会被解析为`attr="false"`，也为假值
 
-<p class="tip">注意：对于其它指令 (如，`v-if`和`v-show`)，JavaScript本来的真假值依然生效</p>
+> 注意：对于其它指令 (如，`v-if`和`v-show`)，JavaScript本来的真假值依然生效
 
 ### 用`v-on`监听组件的原生事件 
 
@@ -1157,6 +1157,7 @@ partial（html片段）被废弃。除用于性能关键（performance-critical�
 
 functional components优于partials的地方在于它可以更灵活（dynamic），因为可以使用JavaScript的全部功能。但是如果从来没有使用过具有渲染函数的组件框架（React应该算是吧），也许需要花点功夫去学习学习。
 
-
+<br>
+<br>
 
 水平有限，译文在尽量尊重原文的原则下保证中文表达的顺畅，如有不妥，欢迎[邮件](mailto:weimingyuan@163.com)或[PR](https://github.com/arnan125/whats-new-in-vue2.0)
